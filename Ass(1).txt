@@ -1,0 +1,187 @@
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Vector;
+
+
+public class CourseRecord
+{
+    private Student student;
+    private Vector assignments;
+
+    CourseRecord() {
+        assignments = new Vector();
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student s) {
+        student = s;
+    }
+
+    public void addAssignment(Assignment a) {
+        assignments.addElement(a);
+    }
+
+    public Enumeration getAssignments() {
+        return assignments.elements();
+    }
+
+    public double average(){
+        int numOfMarks = 0;
+        double marks = 0;
+        for (Object assignment : assignments) {
+            Assignment temp = (Assignment) assignment;
+            try {
+
+                if (temp.getMark() != -1){
+
+                    marks += temp.getMark();
+                    numOfMarks++;
+                }
+            } catch (NotYetSetException e) {
+                e.printStackTrace();
+            }
+        }
+        if (numOfMarks != 0)
+            return marks/ numOfMarks;
+        else
+            return 0;
+
+    }
+    public boolean canTakeFinalExam()  {
+        int numOfMarks = 0;
+        for (Object assignment : assignments) {
+            Assignment temp = (Assignment) assignment;
+            try {
+                if (temp.getMark() != -1)
+                    numOfMarks++;
+            }catch (NotYetSetException e){
+                e.printStackTrace();
+            }
+        }
+        return numOfMarks >= 3;
+    }
+
+}
+
+.....................................................
+
+public class Student {
+    private String name;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+.....................................................
+
+public class NotYetSetException extends Exception
+{
+    public NotYetSetException(String s) {
+        super(s);
+    }
+}
+....................................................
+
+public class Main 
+{
+    public static void main(String[] args) {
+
+    }
+}
+####################################################
+
+import java.util.Vector;
+import java.util.Enumeration;
+
+
+public class Course {
+    private String title;
+    private Vector courseRecords;
+
+    Course() {
+        courseRecords = new Vector();
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String t) {
+        title = t;
+    }
+
+    public void addCourseRecord(CourseRecord cr) {
+        courseRecords.addElement(cr);
+    }
+
+    public Enumeration getCourseRecords() {
+        return courseRecords.elements();
+    }
+
+    public void printCourseStudents() {
+        for (Object courseRecord :
+                courseRecords
+        ) {
+            CourseRecord temp = (CourseRecord) courseRecord;
+
+            System.out.println(temp.getStudent());
+        }
+    }
+
+    public void printBestStudent() {
+        CourseRecord bestStudentRecord = (CourseRecord) courseRecords.get(0);
+
+        for (int i = 1; i < courseRecords.size(); i++) {
+            CourseRecord temp = (CourseRecord) courseRecords.get(i);
+            if (temp.average() > bestStudentRecord.average()) {
+                bestStudentRecord = temp;
+            }
+            System.out.println(bestStudentRecord.getStudent());
+        }
+    }
+
+    public void printFinalExamStudents() {
+        for (Object courseRecord : courseRecords) {
+            CourseRecord record = (CourseRecord) courseRecord;
+            if (record.canTakeFinalExam()) {
+                System.out.println(record.getStudent());
+            }
+        }
+
+    }
+
+}
+#########################################################
+
+public class Assignment {
+    private double mark = -1;
+
+    Assignment() {
+    }
+
+    public double getMark() throws NotYetSetException {
+        if (mark == -1) {
+            throw new
+                    NotYetSetException("Mark is not yet set");
+        }
+        return mark;
+    }
+
+    public void setMark(int m) {
+        mark = m;
+    }
+}
+############################################################
